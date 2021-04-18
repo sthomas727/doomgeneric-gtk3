@@ -152,17 +152,29 @@ void cmap_to_fb(uint8_t * out, uint8_t * in, int in_pixels)
     int i, j, k;
     struct color c;
     uint32_t pix;
-    uint16_t r, g, b;
+    //uint16_t r, g, b;
+    uint32_t r,g,b,a;
 
     for (i = 0; i < in_pixels; i++)
     {
+        
         c = colors[*in];  /* R:8 G:8 B:8 format! */
+        r = c.r;
+        g = c.g << 8;
+        b = c.b << 16;
+        pix = b | g | r;
+        
+        /*
+        
         r = (uint16_t)(c.r >> (8 - s_Fb.red.length));
         g = (uint16_t)(c.g >> (8 - s_Fb.green.length));
         b = (uint16_t)(c.b >> (8 - s_Fb.blue.length));
         pix = r << s_Fb.red.offset;
         pix |= g << s_Fb.green.offset;
         pix |= b << s_Fb.blue.offset;
+        */
+        
+       
 
         for (k = 0; k < fb_scaling; k++) {
             for (j = 0; j < s_Fb.bits_per_pixel/8; j++) {
@@ -183,17 +195,19 @@ void I_InitGraphics (void)
 	s_Fb.yres = DOOMGENERIC_RESY;
 	s_Fb.xres_virtual = s_Fb.xres;
 	s_Fb.yres_virtual = s_Fb.yres;
-	s_Fb.bits_per_pixel = 32;
+	s_Fb.bits_per_pixel = 24;
 
 	s_Fb.blue.length = 8;
 	s_Fb.green.length = 8;
 	s_Fb.red.length = 8;
 	s_Fb.transp.length = 8;
 
+    
 	s_Fb.blue.offset = 0;
 	s_Fb.green.offset = 8;
 	s_Fb.red.offset = 16;
 	s_Fb.transp.offset = 24;
+
 	
 
     printf("I_InitGraphics: framebuffer: x_res: %d, y_res: %d, x_virtual: %d, y_virtual: %d, bpp: %d\n",
